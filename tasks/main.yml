@@ -1,0 +1,37 @@
+---
+
+- name: Download AD Computer Object Script
+  win_get_url:
+   url: "https://artrepo.domain.com/artifactory/Engineering/admove.ps1"
+   dest: C:\\sources\\ansible
+   validate_certs: no
+   force: no
+   timeout: 90
+
+- name: Update AD Computer Object Move Script and add desired OU
+  win_lineinfile:
+    path: c:\sources\ansible\admove.ps1
+    backrefs: true
+    regexp: '""'
+    insertafter: '""'
+    line: "{{ ou }}"
+
+- name: Execute AD Computer Object PS Script
+  win_shell: c:\sources\ansible\admove.ps1
+  args:
+    chdir: c:\sources\ansible
+  vars:
+   ansible_become: yes
+   ansible_become_method: runas
+   ansible_become_user: '{{ env }}\{{ admin }}'
+   ansible_become_password: '{{ admin_pwd }}'
+
+- name: Clean up AD Object Script
+  win_file:
+    path: c:\sources\ansible\admove.ps1
+    state: absent
+
+- name: Run GPO Update
+  win_shell: gpupdate /force
+  args:
+    executable: cmd
