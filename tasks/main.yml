@@ -2,7 +2,7 @@
 
 - name: Download AD Computer Object Script
   win_get_url:
-   url: "https://artrepo.domain.com/artifactory/Engineering/admove.ps1"
+   url: "https://artrepo.domain.com/artifactory/admove.ps1"
    dest: C:\\sources\\ansible
    validate_certs: no
    force: no
